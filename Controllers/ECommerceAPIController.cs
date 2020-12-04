@@ -86,5 +86,30 @@ namespace ECommerceAPI.Controllers
 
             return Ok(productlist);
         }
+
+        public IHttpActionResult GetAllCategories()
+        {
+            IList<ProductCategoryViewModel> productCatlist = null;
+
+            using (var ctx = new ECommerceDemoEntities())
+            {
+                //var s = ctx.Products.Include("ProductAttribute").ToList();
+
+                productCatlist = ctx.ProductCategories
+                            .Select(p => new ProductCategoryViewModel()
+                            {
+                                ProdCatId = p.ProdCatId,
+                                CategoryName = p.CategoryName
+                                
+                            }).ToList<ProductCategoryViewModel>();
+            }
+
+            if (productCatlist.Count == 0)
+            {
+                //return NotFound();
+            }
+
+            return Ok(productCatlist);
+        }
     }
 }
