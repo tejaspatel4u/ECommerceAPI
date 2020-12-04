@@ -18,7 +18,7 @@ namespace ECommerceAPI.Controllers
             using (var ctx = new ECommerceDemoEntities())
             {
                 //var s = ctx.Products.Include("ProductAttribute").ToList();
-                //dd
+                
                 productlist = ctx.Products.Include("ProductAttribute")
                             .Select(p => new ProductViewModel()
                             {
