@@ -1,0 +1,300 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="ECommerceDemoModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Product">
+          <Key>
+            <PropertyRef Name="ProductId" />
+          </Key>
+          <Property Name="ProductId" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ProdCatId" Type="int" Nullable="false" />
+          <Property Name="ProdName" Type="varchar" MaxLength="250" Nullable="false" />
+          <Property Name="ProdDescription" Type="varchar(max)" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'ECommerceDemo.dbo.ProductAttribute' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="ProductAttribute">
+          <Key>
+            <PropertyRef Name="ProductId" />
+            <PropertyRef Name="AttributeId" />
+          </Key>
+          <Property Name="ProductId" Type="bigint" Nullable="false" />
+          <Property Name="AttributeId" Type="int" Nullable="false" />
+          <Property Name="AttributeValue" Type="varchar" MaxLength="250" />
+        </EntityType>
+        <EntityType Name="ProductAttributeLookup">
+          <Key>
+            <PropertyRef Name="AttributeId" />
+          </Key>
+          <Property Name="AttributeId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ProdCatId" Type="int" Nullable="false" />
+          <Property Name="AttributeName" Type="varchar" MaxLength="250" Nullable="false" />
+        </EntityType>
+        <EntityType Name="ProductCategory">
+          <Key>
+            <PropertyRef Name="ProdCatId" />
+          </Key>
+          <Property Name="ProdCatId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CategoryName" Type="varchar" MaxLength="250" />
+        </EntityType>
+        <Association Name="FK_Product_ProductCategory">
+          <End Role="ProductCategory" Type="Self.ProductCategory" Multiplicity="1" />
+          <End Role="Product" Type="Self.Product" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ProductCategory">
+              <PropertyRef Name="ProdCatId" />
+            </Principal>
+            <Dependent Role="Product">
+              <PropertyRef Name="ProdCatId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ProductAttribute_Product">
+          <End Role="Product" Type="Self.Product" Multiplicity="1" />
+          <End Role="ProductAttribute" Type="Self.ProductAttribute" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Product">
+              <PropertyRef Name="ProductId" />
+            </Principal>
+            <Dependent Role="ProductAttribute">
+              <PropertyRef Name="ProductId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ProductAttribute_ProductAttributeLookup">
+          <End Role="ProductAttributeLookup" Type="Self.ProductAttributeLookup" Multiplicity="1" />
+          <End Role="ProductAttribute" Type="Self.ProductAttribute" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ProductAttributeLookup">
+              <PropertyRef Name="AttributeId" />
+            </Principal>
+            <Dependent Role="ProductAttribute">
+              <PropertyRef Name="AttributeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ProductAttributeLookup_ProductCategory">
+          <End Role="ProductCategory" Type="Self.ProductCategory" Multiplicity="1" />
+          <End Role="ProductAttributeLookup" Type="Self.ProductAttributeLookup" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ProductCategory">
+              <PropertyRef Name="ProdCatId" />
+            </Principal>
+            <Dependent Role="ProductAttributeLookup">
+              <PropertyRef Name="ProdCatId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="ECommerceDemoModelStoreContainer">
+          <EntitySet Name="Product" EntityType="Self.Product" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ProductAttributeLookup" EntityType="Self.ProductAttributeLookup" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ProductCategory" EntityType="Self.ProductCategory" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ProductAttribute" EntityType="Self.ProductAttribute" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [ProductAttribute].[ProductId] AS [ProductId], 
+    [ProductAttribute].[AttributeId] AS [AttributeId], 
+    [ProductAttribute].[AttributeValue] AS [AttributeValue]
+    FROM [dbo].[ProductAttribute] AS [ProductAttribute]</DefiningQuery>
+          </EntitySet>
+          <AssociationSet Name="FK_Product_ProductCategory" Association="Self.FK_Product_ProductCategory">
+            <End Role="ProductCategory" EntitySet="ProductCategory" />
+            <End Role="Product" EntitySet="Product" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ProductAttribute_Product" Association="Self.FK_ProductAttribute_Product">
+            <End Role="Product" EntitySet="Product" />
+            <End Role="ProductAttribute" EntitySet="ProductAttribute" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ProductAttribute_ProductAttributeLookup" Association="Self.FK_ProductAttribute_ProductAttributeLookup">
+            <End Role="ProductAttributeLookup" EntitySet="ProductAttributeLookup" />
+            <End Role="ProductAttribute" EntitySet="ProductAttribute" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ProductAttributeLookup_ProductCategory" Association="Self.FK_ProductAttributeLookup_ProductCategory">
+            <End Role="ProductCategory" EntitySet="ProductCategory" />
+            <End Role="ProductAttributeLookup" EntitySet="ProductAttributeLookup" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="ECommerceDemoModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="Product">
+          <Key>
+            <PropertyRef Name="ProductId" />
+          </Key>
+          <Property Name="ProductId" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ProdCatId" Type="Int32" Nullable="false" />
+          <Property Name="ProdName" Type="String" MaxLength="250" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="ProdDescription" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="ProductCategory" Relationship="Self.FK_Product_ProductCategory" FromRole="Product" ToRole="ProductCategory" />
+          <NavigationProperty Name="ProductAttributes" Relationship="Self.FK_ProductAttribute_Product" FromRole="Product" ToRole="ProductAttribute" />
+        </EntityType>
+        <EntityType Name="ProductAttributeLookup">
+          <Key>
+            <PropertyRef Name="AttributeId" />
+          </Key>
+          <Property Name="AttributeId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ProdCatId" Type="Int32" Nullable="false" />
+          <Property Name="AttributeName" Type="String" MaxLength="250" FixedLength="false" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="ProductAttributes" Relationship="Self.FK_ProductAttribute_ProductAttributeLookup" FromRole="ProductAttributeLookup" ToRole="ProductAttribute" />
+          <NavigationProperty Name="ProductCategory" Relationship="Self.FK_ProductAttributeLookup_ProductCategory" FromRole="ProductAttributeLookup" ToRole="ProductCategory" />
+        </EntityType>
+        <EntityType Name="ProductCategory">
+          <Key>
+            <PropertyRef Name="ProdCatId" />
+          </Key>
+          <Property Name="ProdCatId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CategoryName" Type="String" MaxLength="250" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="Products" Relationship="Self.FK_Product_ProductCategory" FromRole="ProductCategory" ToRole="Product" />
+          <NavigationProperty Name="ProductAttributeLookups" Relationship="Self.FK_ProductAttributeLookup_ProductCategory" FromRole="ProductCategory" ToRole="ProductAttributeLookup" />
+        </EntityType>
+        <EntityType Name="ProductAttribute">
+          <Key>
+            <PropertyRef Name="ProductId" />
+            <PropertyRef Name="AttributeId" />
+          </Key>
+          <Property Name="ProductId" Type="Int64" Nullable="false" />
+          <Property Name="AttributeId" Type="Int32" Nullable="false" />
+          <Property Name="AttributeValue" Type="String" MaxLength="250" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="Product" Relationship="Self.FK_ProductAttribute_Product" FromRole="ProductAttribute" ToRole="Product" />
+          <NavigationProperty Name="ProductAttributeLookup" Relationship="Self.FK_ProductAttribute_ProductAttributeLookup" FromRole="ProductAttribute" ToRole="ProductAttributeLookup" />
+        </EntityType>
+        <Association Name="FK_Product_ProductCategory">
+          <End Role="ProductCategory" Type="Self.ProductCategory" Multiplicity="1" />
+          <End Role="Product" Type="Self.Product" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ProductCategory">
+              <PropertyRef Name="ProdCatId" />
+            </Principal>
+            <Dependent Role="Product">
+              <PropertyRef Name="ProdCatId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ProductAttribute_Product">
+          <End Role="Product" Type="Self.Product" Multiplicity="1" />
+          <End Role="ProductAttribute" Type="Self.ProductAttribute" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Product">
+              <PropertyRef Name="ProductId" />
+            </Principal>
+            <Dependent Role="ProductAttribute">
+              <PropertyRef Name="ProductId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ProductAttribute_ProductAttributeLookup">
+          <End Role="ProductAttributeLookup" Type="Self.ProductAttributeLookup" Multiplicity="1" />
+          <End Role="ProductAttribute" Type="Self.ProductAttribute" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ProductAttributeLookup">
+              <PropertyRef Name="AttributeId" />
+            </Principal>
+            <Dependent Role="ProductAttribute">
+              <PropertyRef Name="AttributeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ProductAttributeLookup_ProductCategory">
+          <End Role="ProductCategory" Type="Self.ProductCategory" Multiplicity="1" />
+          <End Role="ProductAttributeLookup" Type="Self.ProductAttributeLookup" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ProductCategory">
+              <PropertyRef Name="ProdCatId" />
+            </Principal>
+            <Dependent Role="ProductAttributeLookup">
+              <PropertyRef Name="ProdCatId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="ECommerceDemoEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Products" EntityType="Self.Product" />
+          <EntitySet Name="ProductAttributeLookups" EntityType="Self.ProductAttributeLookup" />
+          <EntitySet Name="ProductCategories" EntityType="Self.ProductCategory" />
+          <EntitySet Name="ProductAttributes" EntityType="Self.ProductAttribute" />
+          <AssociationSet Name="FK_Product_ProductCategory" Association="Self.FK_Product_ProductCategory">
+            <End Role="ProductCategory" EntitySet="ProductCategories" />
+            <End Role="Product" EntitySet="Products" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ProductAttribute_Product" Association="Self.FK_ProductAttribute_Product">
+            <End Role="Product" EntitySet="Products" />
+            <End Role="ProductAttribute" EntitySet="ProductAttributes" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ProductAttribute_ProductAttributeLookup" Association="Self.FK_ProductAttribute_ProductAttributeLookup">
+            <End Role="ProductAttributeLookup" EntitySet="ProductAttributeLookups" />
+            <End Role="ProductAttribute" EntitySet="ProductAttributes" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ProductAttributeLookup_ProductCategory" Association="Self.FK_ProductAttributeLookup_ProductCategory">
+            <End Role="ProductCategory" EntitySet="ProductCategories" />
+            <End Role="ProductAttributeLookup" EntitySet="ProductAttributeLookups" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="ECommerceDemoModelStoreContainer" CdmEntityContainer="ECommerceDemoEntities">
+          <EntitySetMapping Name="Products">
+            <EntityTypeMapping TypeName="ECommerceDemoModel.Product">
+              <MappingFragment StoreEntitySet="Product">
+                <ScalarProperty Name="ProductId" ColumnName="ProductId" />
+                <ScalarProperty Name="ProdCatId" ColumnName="ProdCatId" />
+                <ScalarProperty Name="ProdName" ColumnName="ProdName" />
+                <ScalarProperty Name="ProdDescription" ColumnName="ProdDescription" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ProductAttributeLookups">
+            <EntityTypeMapping TypeName="ECommerceDemoModel.ProductAttributeLookup">
+              <MappingFragment StoreEntitySet="ProductAttributeLookup">
+                <ScalarProperty Name="AttributeId" ColumnName="AttributeId" />
+                <ScalarProperty Name="ProdCatId" ColumnName="ProdCatId" />
+                <ScalarProperty Name="AttributeName" ColumnName="AttributeName" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ProductCategories">
+            <EntityTypeMapping TypeName="ECommerceDemoModel.ProductCategory">
+              <MappingFragment StoreEntitySet="ProductCategory">
+                <ScalarProperty Name="ProdCatId" ColumnName="ProdCatId" />
+                <ScalarProperty Name="CategoryName" ColumnName="CategoryName" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ProductAttributes">
+            <EntityTypeMapping TypeName="ECommerceDemoModel.ProductAttribute">
+              <MappingFragment StoreEntitySet="ProductAttribute">
+                <ScalarProperty Name="ProductId" ColumnName="ProductId" />
+                <ScalarProperty Name="AttributeId" ColumnName="AttributeId" />
+                <ScalarProperty Name="AttributeValue" ColumnName="AttributeValue" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
