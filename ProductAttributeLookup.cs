@@ -24,8 +24,8 @@ namespace ECommerceAPI
         public int ProdCatId { get; set; }
         public string AttributeName { get; set; }
     
+        public virtual ProductCategory ProductCategory { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ProductAttribute> ProductAttributes { get; set; }
-        public virtual ProductCategory ProductCategory { get; set; }
     }
 }

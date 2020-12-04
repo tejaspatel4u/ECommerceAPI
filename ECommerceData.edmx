@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="ECommerceDemoModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="ECommerceDemoModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="Product">
           <Key>
             <PropertyRef Name="ProductId" />
@@ -14,8 +14,6 @@
           <Property Name="ProdName" Type="varchar" MaxLength="250" Nullable="false" />
           <Property Name="ProdDescription" Type="varchar(max)" />
         </EntityType>
-        <!--Errors Found During Generation:
-warning 6002: The table/view 'ECommerceDemo.dbo.ProductAttribute' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="ProductAttribute">
           <Key>
             <PropertyRef Name="ProductId" />
@@ -90,15 +88,9 @@ warning 6002: The table/view 'ECommerceDemo.dbo.ProductAttribute' does not have 
         </Association>
         <EntityContainer Name="ECommerceDemoModelStoreContainer">
           <EntitySet Name="Product" EntityType="Self.Product" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ProductAttribute" EntityType="Self.ProductAttribute" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ProductAttributeLookup" EntityType="Self.ProductAttributeLookup" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ProductCategory" EntityType="Self.ProductCategory" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="ProductAttribute" EntityType="Self.ProductAttribute" store:Type="Tables" store:Schema="dbo">
-            <DefiningQuery>SELECT 
-    [ProductAttribute].[ProductId] AS [ProductId], 
-    [ProductAttribute].[AttributeId] AS [AttributeId], 
-    [ProductAttribute].[AttributeValue] AS [AttributeValue]
-    FROM [dbo].[ProductAttribute] AS [ProductAttribute]</DefiningQuery>
-          </EntitySet>
           <AssociationSet Name="FK_Product_ProductCategory" Association="Self.FK_Product_ProductCategory">
             <End Role="ProductCategory" EntitySet="ProductCategory" />
             <End Role="Product" EntitySet="Product" />
@@ -116,8 +108,7 @@ warning 6002: The table/view 'ECommerceDemo.dbo.ProductAttribute' does not have 
             <End Role="ProductAttributeLookup" EntitySet="ProductAttributeLookup" />
           </AssociationSet>
         </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="ECommerceDemoModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
@@ -130,7 +121,7 @@ warning 6002: The table/view 'ECommerceDemo.dbo.ProductAttribute' does not have 
           <Property Name="ProdName" Type="String" MaxLength="250" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="ProdDescription" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
           <NavigationProperty Name="ProductCategory" Relationship="Self.FK_Product_ProductCategory" FromRole="Product" ToRole="ProductCategory" />
-          <NavigationProperty Name="ProductAttributes" Relationship="Self.FK_ProductAttribute_Product" FromRole="Product" ToRole="ProductAttribute" />
+          <NavigationProperty Name="ProductAttributes" Relationship="ECommerceDemoModel.FK_ProductAttribute_Product" FromRole="Product" ToRole="ProductAttribute" />
         </EntityType>
         <EntityType Name="ProductAttributeLookup">
           <Key>
@@ -139,8 +130,8 @@ warning 6002: The table/view 'ECommerceDemo.dbo.ProductAttribute' does not have 
           <Property Name="AttributeId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="ProdCatId" Type="Int32" Nullable="false" />
           <Property Name="AttributeName" Type="String" MaxLength="250" FixedLength="false" Unicode="false" Nullable="false" />
-          <NavigationProperty Name="ProductAttributes" Relationship="Self.FK_ProductAttribute_ProductAttributeLookup" FromRole="ProductAttributeLookup" ToRole="ProductAttribute" />
           <NavigationProperty Name="ProductCategory" Relationship="Self.FK_ProductAttributeLookup_ProductCategory" FromRole="ProductAttributeLookup" ToRole="ProductCategory" />
+          <NavigationProperty Name="ProductAttributes" Relationship="ECommerceDemoModel.FK_ProductAttribute_ProductAttributeLookup" FromRole="ProductAttributeLookup" ToRole="ProductAttribute" />
         </EntityType>
         <EntityType Name="ProductCategory">
           <Key>
@@ -151,17 +142,6 @@ warning 6002: The table/view 'ECommerceDemo.dbo.ProductAttribute' does not have 
           <NavigationProperty Name="Products" Relationship="Self.FK_Product_ProductCategory" FromRole="ProductCategory" ToRole="Product" />
           <NavigationProperty Name="ProductAttributeLookups" Relationship="Self.FK_ProductAttributeLookup_ProductCategory" FromRole="ProductCategory" ToRole="ProductAttributeLookup" />
         </EntityType>
-        <EntityType Name="ProductAttribute">
-          <Key>
-            <PropertyRef Name="ProductId" />
-            <PropertyRef Name="AttributeId" />
-          </Key>
-          <Property Name="ProductId" Type="Int64" Nullable="false" />
-          <Property Name="AttributeId" Type="Int32" Nullable="false" />
-          <Property Name="AttributeValue" Type="String" MaxLength="250" FixedLength="false" Unicode="false" />
-          <NavigationProperty Name="Product" Relationship="Self.FK_ProductAttribute_Product" FromRole="ProductAttribute" ToRole="Product" />
-          <NavigationProperty Name="ProductAttributeLookup" Relationship="Self.FK_ProductAttribute_ProductAttributeLookup" FromRole="ProductAttribute" ToRole="ProductAttributeLookup" />
-        </EntityType>
         <Association Name="FK_Product_ProductCategory">
           <End Role="ProductCategory" Type="Self.ProductCategory" Multiplicity="1" />
           <End Role="Product" Type="Self.Product" Multiplicity="*" />
@@ -171,30 +151,6 @@ warning 6002: The table/view 'ECommerceDemo.dbo.ProductAttribute' does not have 
             </Principal>
             <Dependent Role="Product">
               <PropertyRef Name="ProdCatId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_ProductAttribute_Product">
-          <End Role="Product" Type="Self.Product" Multiplicity="1" />
-          <End Role="ProductAttribute" Type="Self.ProductAttribute" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Product">
-              <PropertyRef Name="ProductId" />
-            </Principal>
-            <Dependent Role="ProductAttribute">
-              <PropertyRef Name="ProductId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_ProductAttribute_ProductAttributeLookup">
-          <End Role="ProductAttributeLookup" Type="Self.ProductAttributeLookup" Multiplicity="1" />
-          <End Role="ProductAttribute" Type="Self.ProductAttribute" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="ProductAttributeLookup">
-              <PropertyRef Name="AttributeId" />
-            </Principal>
-            <Dependent Role="ProductAttribute">
-              <PropertyRef Name="AttributeId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -214,24 +170,59 @@ warning 6002: The table/view 'ECommerceDemo.dbo.ProductAttribute' does not have 
           <EntitySet Name="Products" EntityType="Self.Product" />
           <EntitySet Name="ProductAttributeLookups" EntityType="Self.ProductAttributeLookup" />
           <EntitySet Name="ProductCategories" EntityType="Self.ProductCategory" />
-          <EntitySet Name="ProductAttributes" EntityType="Self.ProductAttribute" />
           <AssociationSet Name="FK_Product_ProductCategory" Association="Self.FK_Product_ProductCategory">
             <End Role="ProductCategory" EntitySet="ProductCategories" />
             <End Role="Product" EntitySet="Products" />
-          </AssociationSet>
-          <AssociationSet Name="FK_ProductAttribute_Product" Association="Self.FK_ProductAttribute_Product">
-            <End Role="Product" EntitySet="Products" />
-            <End Role="ProductAttribute" EntitySet="ProductAttributes" />
-          </AssociationSet>
-          <AssociationSet Name="FK_ProductAttribute_ProductAttributeLookup" Association="Self.FK_ProductAttribute_ProductAttributeLookup">
-            <End Role="ProductAttributeLookup" EntitySet="ProductAttributeLookups" />
-            <End Role="ProductAttribute" EntitySet="ProductAttributes" />
           </AssociationSet>
           <AssociationSet Name="FK_ProductAttributeLookup_ProductCategory" Association="Self.FK_ProductAttributeLookup_ProductCategory">
             <End Role="ProductCategory" EntitySet="ProductCategories" />
             <End Role="ProductAttributeLookup" EntitySet="ProductAttributeLookups" />
           </AssociationSet>
+          <EntitySet Name="ProductAttributes" EntityType="ECommerceDemoModel.ProductAttribute" />
+          <AssociationSet Name="FK_ProductAttribute_Product" Association="ECommerceDemoModel.FK_ProductAttribute_Product">
+            <End Role="Product" EntitySet="Products" />
+            <End Role="ProductAttribute" EntitySet="ProductAttributes" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ProductAttribute_ProductAttributeLookup" Association="ECommerceDemoModel.FK_ProductAttribute_ProductAttributeLookup">
+            <End Role="ProductAttributeLookup" EntitySet="ProductAttributeLookups" />
+            <End Role="ProductAttribute" EntitySet="ProductAttributes" />
+          </AssociationSet>
         </EntityContainer>
+        <EntityType Name="ProductAttribute">
+          <Key>
+            <PropertyRef Name="ProductId" />
+            <PropertyRef Name="AttributeId" />
+          </Key>
+          <Property Name="ProductId" Type="Int64" Nullable="false" />
+          <Property Name="AttributeId" Type="Int32" Nullable="false" />
+          <Property Name="AttributeValue" Type="String" MaxLength="250" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="Product" Relationship="ECommerceDemoModel.FK_ProductAttribute_Product" FromRole="ProductAttribute" ToRole="Product" />
+          <NavigationProperty Name="ProductAttributeLookup" Relationship="ECommerceDemoModel.FK_ProductAttribute_ProductAttributeLookup" FromRole="ProductAttribute" ToRole="ProductAttributeLookup" />
+        </EntityType>
+        <Association Name="FK_ProductAttribute_Product">
+          <End Type="ECommerceDemoModel.Product" Role="Product" Multiplicity="1" />
+          <End Type="ECommerceDemoModel.ProductAttribute" Role="ProductAttribute" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Product">
+              <PropertyRef Name="ProductId" />
+            </Principal>
+            <Dependent Role="ProductAttribute">
+              <PropertyRef Name="ProductId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ProductAttribute_ProductAttributeLookup">
+          <End Type="ECommerceDemoModel.ProductAttributeLookup" Role="ProductAttributeLookup" Multiplicity="1" />
+          <End Type="ECommerceDemoModel.ProductAttribute" Role="ProductAttribute" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ProductAttributeLookup">
+              <PropertyRef Name="AttributeId" />
+            </Principal>
+            <Dependent Role="ProductAttribute">
+              <PropertyRef Name="AttributeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -268,9 +259,9 @@ warning 6002: The table/view 'ECommerceDemo.dbo.ProductAttribute' does not have 
           <EntitySetMapping Name="ProductAttributes">
             <EntityTypeMapping TypeName="ECommerceDemoModel.ProductAttribute">
               <MappingFragment StoreEntitySet="ProductAttribute">
-                <ScalarProperty Name="ProductId" ColumnName="ProductId" />
-                <ScalarProperty Name="AttributeId" ColumnName="AttributeId" />
                 <ScalarProperty Name="AttributeValue" ColumnName="AttributeValue" />
+                <ScalarProperty Name="AttributeId" ColumnName="AttributeId" />
+                <ScalarProperty Name="ProductId" ColumnName="ProductId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

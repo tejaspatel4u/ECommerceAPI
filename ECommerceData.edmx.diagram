@@ -8,11 +8,11 @@
         <EntityTypeShape EntityType="ECommerceDemoModel.Product" Width="1.5" PointX="3" PointY="1.125" IsExpanded="true" />
         <EntityTypeShape EntityType="ECommerceDemoModel.ProductAttributeLookup" Width="1.5" PointX="3" PointY="4" IsExpanded="true" />
         <EntityTypeShape EntityType="ECommerceDemoModel.ProductCategory" Width="1.5" PointX="0.75" PointY="2.625" IsExpanded="true" />
-        <EntityTypeShape EntityType="ECommerceDemoModel.ProductAttribute" Width="1.5" PointX="5.25" PointY="2.5" IsExpanded="true" />
         <AssociationConnector Association="ECommerceDemoModel.FK_Product_ProductCategory" ManuallyRouted="false" />
-        <AssociationConnector Association="ECommerceDemoModel.FK_ProductAttribute_Product" ManuallyRouted="false" />
-        <AssociationConnector Association="ECommerceDemoModel.FK_ProductAttribute_ProductAttributeLookup" ManuallyRouted="false" />
         <AssociationConnector Association="ECommerceDemoModel.FK_ProductAttributeLookup_ProductCategory" ManuallyRouted="false" />
+        <EntityTypeShape EntityType="ECommerceDemoModel.ProductAttribute" Width="1.5" PointX="5.25" PointY="2.625" />
+        <AssociationConnector Association="ECommerceDemoModel.FK_ProductAttribute_Product" />
+        <AssociationConnector Association="ECommerceDemoModel.FK_ProductAttribute_ProductAttributeLookup" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

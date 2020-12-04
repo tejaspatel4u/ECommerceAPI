@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -18,15 +19,15 @@ namespace ECommerceAPI.Controllers
             using (var ctx = new ECommerceDemoEntities())
             {
                 //var s = ctx.Products.Include("ProductAttribute").ToList();
-                
-                productlist = ctx.Products.Include("ProductAttribute")
+
+                productlist = ctx.Products
                             .Select(p => new ProductViewModel()
                             {
                                 ProductId = p.ProductId,
                                 ProductName = p.ProdName,
                                 ProductDescription = p.ProdDescription,
                                 //ListProductAttributes = {prductid= p.Pr
-                            }).ToList<ProductViewModel>();
+                            }).OrderByDescending(p=>p.ProductId).ToList<ProductViewModel>();
 
 
                 for (int i = 0; i < productlist.Count(); i++)
@@ -65,7 +66,7 @@ namespace ECommerceAPI.Controllers
                                 ProductName = p.ProdName,
                                 ProductDescription = p.ProdDescription,
                                 //ListProductAttributes = {prductid= p.Pr
-                            }).Where(p=>p.ProductId == Id).FirstOrDefault();
+                            }).Where(p => p.ProductId == Id).FirstOrDefault();
 
                 if (productlist != null)
                 {
@@ -100,7 +101,7 @@ namespace ECommerceAPI.Controllers
                             {
                                 ProdCatId = p.ProdCatId,
                                 CategoryName = p.CategoryName
-                                
+
                             }).ToList<ProductCategoryViewModel>();
             }
 
@@ -110,6 +111,75 @@ namespace ECommerceAPI.Controllers
             }
 
             return Ok(productCatlist);
+        }
+
+        public IHttpActionResult GetAllProductAttributeLookup(int ProdCatId)
+        {
+            IList<ProductAttributeLookupViewModel> productAttributelist = null;
+
+            using (var ctx = new ECommerceDemoEntities())
+            {
+                //var s = ctx.Products.Include("ProductAttribute").ToList();
+
+                productAttributelist = ctx.ProductAttributeLookups
+                            .Where(p => p.ProdCatId == ProdCatId)
+                            .Select(p => new ProductAttributeLookupViewModel()
+                            {
+                                AttributeId = p.AttributeId,
+                                AttributeName = p.AttributeName,
+                                ProdCatId = p.ProdCatId
+                            }).ToList<ProductAttributeLookupViewModel>();
+            }
+
+            if (productAttributelist.Count == 0)
+            {
+                //return NotFound();
+            }
+
+            return Ok(productAttributelist);
+        }
+
+        public IHttpActionResult PostNewProduct(ProductViewModel objproduct)
+        {
+            ProductViewModel product = objproduct;
+
+            if (!ModelState.IsValid)
+                return BadRequest("Invalid data.");
+
+            using (var ctx = new ECommerceDemoEntities())
+            {
+                //Save Product
+                ctx.Products.Add(new Product()
+                {
+                    //ProductId = product.ProductId,
+                    ProdCatId = product.ProdCatId,
+                    ProdName = product.ProductName,
+                    ProdDescription = product.ProductDescription
+                });
+                
+                ctx.SaveChanges();
+                long ProductId = product.ProductId;
+                //ctx.Entry(product).GetDatabaseValues();
+
+                //Save Product Attribute
+                ProductId = ctx.Products.OrderByDescending(p=>p.ProductId).Select(p => p.ProductId).FirstOrDefault();
+                
+
+                foreach(var item in product.ListProductAttributes)
+                {
+                    ctx.ProductAttributes.Add(new ProductAttribute()
+                    {
+                        ProductId = ProductId,
+                        AttributeId = item.AttributeId,
+                        AttributeValue = item.AttributeValue
+                    });
+                    
+                }
+
+                ctx.SaveChanges();
+            }
+
+            return Ok();
         }
     }
 }
