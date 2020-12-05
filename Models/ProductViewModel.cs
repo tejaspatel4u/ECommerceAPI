@@ -9,6 +9,7 @@ namespace ECommerceAPI.Models
     public class ProductViewModel
     {
         public long ProductId { get; set; }
+        public string CategoryName { get; set; }
         public int ProdCatId { get; set; }
         public string ProductName { get; set; }
         public string ProductDescription { get; set; }
@@ -35,5 +36,8 @@ namespace ECommerceAPI.Models
         public int AttributeId { get; set; }
         public int ProdCatId { get; set; }
         public string AttributeName { get; set; }
+
+        public string AttributeValue { get; set; }
+        //public ProductAttributeViewModel objProductAttribute { get; set; }
     }
 }
