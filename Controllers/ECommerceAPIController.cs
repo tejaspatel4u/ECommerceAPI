@@ -157,11 +157,8 @@ namespace ECommerceAPI.Controllers
             return Ok(productAttributelist);
         }
 
-        public IHttpActionResult PostNewProduct(ProductViewModel objproduct)
+        public IHttpActionResult PostNewProduct(ProductViewModel product)
         {
-            ProductViewModel product = objproduct;
-            
-
             if (!ModelState.IsValid)
                 return BadRequest("Invalid data.");
 
@@ -175,20 +172,30 @@ namespace ECommerceAPI.Controllers
                 }
 
                 //Save Product
-                ctx.Products.Add(new Product()
+                var objp = new Product()
                 {
                     //ProductId = product.ProductId,
                     ProdCatId = product.ProdCatId,
                     ProdName = product.ProductName,
                     ProdDescription = product.ProductDescription
-                });
+                };
 
+                //ctx.Products.Add(new Product()
+                //{
+                //    //ProductId = product.ProductId,
+                //    ProdCatId = product.ProdCatId,
+                //    ProdName = product.ProductName,
+                //    ProdDescription = product.ProductDescription
+                //});
+                //long ProductId = product.ProductId;
+
+                ctx.Products.Add(objp);
                 ctx.SaveChanges();
-                long ProductId = product.ProductId;
-                //ctx.Entry(product).GetDatabaseValues();
+                
+                long ProductId = objp.ProductId;
 
                 //Save Product Attribute
-                ProductId = ctx.Products.OrderByDescending(p => p.ProductId).Select(p => p.ProductId).FirstOrDefault();
+                //ProductId = ctx.Products.OrderByDescending(p => p.ProductId).Select(p => p.ProductId).FirstOrDefault();
 
 
                 foreach (var item in product.ListProductAttributes)
